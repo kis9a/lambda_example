@@ -36,3 +36,4 @@ todo
 tmp/
 upload
 .env
+lambda-sls

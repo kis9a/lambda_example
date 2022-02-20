@@ -1,20 +1,23 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
-	"time"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/gin-gonic/gin"
+	"github.com/kis9a/lambda-sls/db"
+	"github.com/kis9a/lambda-sls/models"
+	"go.uber.org/zap"
 )
 
-type HandlerTodo struct{}
-
-type Todo struct {
-	ID        int64     `boil:"id" json:"id" toml:"id" yaml:"id"`
-	UserID    int64     `boil:"user_id" json:"user_id" toml:"user_id" yaml:"user_id"`
-	Name      string    `boil:"name" json:"name" toml:"name" yaml:"name"`
-	CreatedAt time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	UpdatedAt time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
+type Movie struct {
+	Year  int    `json:"year" dynamodbav:"year"`
+	Title string `json:"title" dynamodbav:"title"`
+	St    string `json:"st" dynamodbav:"st"`
+	// Info  MovieInfo `json:"info" dynamodbav:"info"`
 }
 
 func GetTodos() gin.HandlerFunc {
@@ -24,7 +27,53 @@ func GetTodos() gin.HandlerFunc {
 		// 	c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		// 	return
 		// }
-		c.JSON(http.StatusOK, gin.H{"todos": []Todo{}})
+		ddb := db.GetDB()
+
+		movie := Movie{
+			Year:  2016,
+			Title: "The Big New Moviee",
+			St:    "apple",
+		}
+
+		mmap, err := dynamodbattribute.MarshalMap(movie)
+		if err != nil {
+			panic("Cannot marshal movie into AttributeValue map")
+		}
+
+		// ddbTable, err := ddb.CreateTable(&dynamodb.CreateTableInput{
+		// 	AttributeDefinitions: []*dynamodb.AttributeDefinition{
+		// 		{
+		// 			AttributeName: aws.String("id"), // プライマリキー名
+		// 			AttributeType: aws.String("S"),  // データ型(String:S, Number:N, Binary:B の三種)
+		// 		},
+		// 	},
+		// 	KeySchema: []*dynamodb.KeySchemaElement{
+		// 		{
+		// 			AttributeName: aws.String("id"),   // インデックス名
+		// 			KeyType:       aws.String("HASH"), // インデックスの型(HASH または RANGE)
+		// 		},
+		// 	},
+		// 	ProvisionedThroughput: &dynamodb.ProvisionedThroughput{ // Required
+		// 		ReadCapacityUnits:  aws.Int64(1), // 読み込みキャパシティーユニット（デフォルト：１）
+		// 		WriteCapacityUnits: aws.Int64(1), // 書き込みキャパシティーユニット（デフォルト：１）
+		// 	},
+		// 	TableName: aws.String("Demo"), // テーブル名
+		// })
+		// zap.S().Info(ddbTable)
+
+		// create the api params
+		params := &dynamodb.PutItemInput{
+			TableName: aws.String("Movies"),
+			Item:      mmap,
+		}
+
+		res, err := ddb.PutItem(params)
+		if err != nil {
+			fmt.Printf("ERROR: %v\n", err.Error())
+		}
+		zap.S().Info(res)
+
+		c.JSON(http.StatusOK, gin.H{"todos": []models.Todo{}})
 	}
 }
 
@@ -45,7 +94,7 @@ func GetTodo() gin.HandlerFunc {
 		// 	c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		// 	return
 		// }
-		c.JSON(http.StatusOK, gin.H{"success": true, "todo": Todo{}})
+		c.JSON(http.StatusOK, gin.H{"success": true, "todo": models.Todo{}})
 	}
 }
 
@@ -62,7 +111,7 @@ func PostTodo() gin.HandlerFunc {
 		// 	log.Println(err)
 		// 	return
 		// }
-		c.JSON(http.StatusOK, gin.H{"success": true, "todo": Todo{}})
+		c.JSON(http.StatusOK, gin.H{"success": true, "todo": models.Todo{}})
 	}
 }
 
@@ -77,7 +126,7 @@ func UpdateTodo() gin.HandlerFunc {
 		// if err != nil {
 		// 	c.JSON(http.StatusInternalServerError, gin.H{"success": false, "error": err.Error()})
 		// }
-		c.JSON(http.StatusOK, gin.H{"success": true, "todo": Todo{}})
+		c.JSON(http.StatusOK, gin.H{"success": true, "todo": models.Todo{}})
 	}
 }
 
@@ -98,6 +147,6 @@ func DeleteTodo() gin.HandlerFunc {
 		// 	c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		// 	return
 		// }
-		c.JSON(http.StatusOK, gin.H{"success": true, "todo": Todo{}})
+		c.JSON(http.StatusOK, gin.H{"success": true, "todo": models.Todo{}})
 	}
 }

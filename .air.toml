@@ -2,9 +2,9 @@ root = "/app"
 tmp_dir = "tmp"
 
 [build]
-cmd = "go build -o todo"
-bin = "todo"
-full_bin = "./todo"
+cmd = "go build -o sls"
+bin = "sls"
+full_bin = "./sls"
 include_ext = ["go"]
 exclude_dir = []
 include_dir = []

@@ -2,27 +2,34 @@ package main
 
 import (
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/kis9a/lambda-todo/config"
-	"github.com/kis9a/lambda-todo/server"
+	"github.com/kis9a/lambda-sls/config"
+	"github.com/kis9a/lambda-sls/db"
+	"github.com/kis9a/lambda-sls/logger"
+	"github.com/kis9a/lambda-sls/server"
 	"go.uber.org/zap"
 )
 
 func main() {
 	// new config
-	cfg := config.NewConfig()
+	config.NewConfig()
+	cfg := config.GetConfig()
 
 	// init logger
 	// new logger
-	logger, _ := zap.NewProduction()
-	zap.ReplaceGlobals(logger)
-	defer logger.Sync()
+	logger.Newlogger()
 
-	// serve
-	s := server.NewServer(cfg, logger)
+	// new db
+	db.NewDB()
+
+	s := server.NewServer()
+	zap.L().Info("Listen Server Http ...",
+		zap.String("port", s.Port),
+		zap.String("mode", s.Mode),
+	)
 	if cfg.ENV == "dev" {
 		err := s.ListenAndServeHttp()
 		if err != nil {
-			zap.L().Error(err.Error())
+			zap.L().Error("err", zap.Error(err))
 		}
 	} else {
 		lambda.Start(s.ListenAndServeGinProxy)
