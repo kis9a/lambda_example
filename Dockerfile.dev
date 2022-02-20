@@ -1,0 +1,16 @@
+FROM golang:1.16.5-alpine3.13
+
+WORKDIR /app
+COPY . /app
+
+RUN go mod download
+
+RUN apk upgrade --update && \
+    apk --no-cache add git
+
+RUN go get -u github.com/cosmtrek/air && \
+    go build -o /go/bin/air github.com/cosmtrek/air
+
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o todo
+
+CMD ["air"]
