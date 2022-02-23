@@ -28,5 +28,6 @@ func InitRouter(r *gin.Engine) {
 	r.Use(middlewares.AuthMiddleware())
 
 	r.GET("/health", handlers.HealthCheck())
+	r.POST("/health", handlers.HealthCheck())
 	r.GET("/todos", handlers.GetTodos())
 }
