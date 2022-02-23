@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"os"
 	"strconv"
 )
@@ -39,6 +38,5 @@ func NewConfig() {
 }
 
 func GetConfig() *Config {
-	fmt.Printf("%v+", config)
 	return &config
 }

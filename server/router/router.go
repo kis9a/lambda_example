@@ -29,5 +29,10 @@ func InitRouter(r *gin.Engine) {
 
 	r.GET("/health", handlers.HealthCheck())
 	r.POST("/health", handlers.HealthCheck())
-	r.GET("/todos", handlers.GetTodos())
+
+	// todo router
+	r.POST("/todos", handlers.ReadTodos())
+	r.POST("/todos/create", handlers.CreateTodo())
+	r.POST("/todos/update", handlers.UpdateTodo())
+	r.POST("/todos/delete", handlers.DeleteTodo())
 }
