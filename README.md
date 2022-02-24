@@ -1,6 +1,6 @@
 ## Lambda-sls
 
-Serverless function collections with Lambda, DynamoDB ...
+Functions with Lambda, DynamoDB to learn AWS serverless services.
 
 ### Create table local example
 
@@ -33,6 +33,8 @@ See [config.go](config/config.go)
 ENV: dev
 SERVER_PORT: 4000
 AWS_REGION: ap-northeast-1
+AWS_ACCESS_KEY_ID: xxxxxxxxxxxxx
+AWS_SECRET_ACCESS_KEY: xxxxxxxxxxxx
 ```
 
 ### Todo API request example
@@ -49,6 +51,12 @@ http://localhost:4000/todos/update -d '{"id":"9d47755a-b7ce-4ba4-b581-a0533d9d2d
 
 curl -X POST -H "Content-Type: application/json" \
 http://localhost:4000/todos/delete -d '{"id":"9d47755a-b7ce-4ba4-b581-a0533d9d2dd8", "name":"todo"}'
+```
+
+### Image upload API request example
+
+```
+curl -X POST -F 'file=@/path/image.png' https://localhost:4000/upload
 ```
 
 ### Why POST method ?
