@@ -5,7 +5,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/google/uuid"
-	"github.com/kis9a/lambda-sls/db"
+	"github.com/kis9a/lambda-sls/infra"
 )
 
 const todoTable = "todo"
@@ -27,7 +27,7 @@ func NewTodoItem() *Todo {
 func (t *Todo) CreateTodoItem(todo TodoItem) (TodoItem, error) {
 	var err error
 
-	ddb := db.GetDB()
+	ddb := infra.GetDB()
 	id := uuid.New().String()
 
 	todo.Id = id
@@ -51,7 +51,7 @@ func (t *Todo) ReadTodoItems(exclusiveStartKey TodoItem) (Todo, error) {
 	var todo Todo
 	var todoItems []TodoItem
 
-	ddb := db.GetDB()
+	ddb := infra.GetDB()
 
 	startKeyMap, err := dynamodbattribute.MarshalMap(exclusiveStartKey)
 	if err != nil {
@@ -91,7 +91,7 @@ func (t *Todo) ReadTodoItems(exclusiveStartKey TodoItem) (Todo, error) {
 }
 
 func (t *Todo) DeleteTodoItem(todo TodoItem) (TodoItem, error) {
-	ddb := db.GetDB()
+	ddb := infra.GetDB()
 	keyMap, err := dynamodbattribute.MarshalMap(todo)
 	if err != nil {
 		return todo, err
@@ -105,7 +105,7 @@ func (t *Todo) DeleteTodoItem(todo TodoItem) (TodoItem, error) {
 }
 
 func (t *Todo) UpdateTodoItem(todo TodoItem) (TodoItem, error) {
-	ddb := db.GetDB()
+	ddb := infra.GetDB()
 	keyMap, err := dynamodbattribute.MarshalMap(todo)
 	if err != nil {
 		return todo, err

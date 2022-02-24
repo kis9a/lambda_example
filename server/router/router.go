@@ -35,4 +35,7 @@ func InitRouter(r *gin.Engine) {
 	r.POST("/todos/create", handlers.CreateTodo())
 	r.POST("/todos/update", handlers.UpdateTodo())
 	r.POST("/todos/delete", handlers.DeleteTodo())
+
+	// upload
+	r.POST("/upload", handlers.ImageUpload())
 }
