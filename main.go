@@ -25,15 +25,15 @@ func main() {
 	infra.NewS3Uploader()
 
 	s := server.NewServer()
-	zap.L().Info("Listen Server Http ...",
-		zap.String("port", s.Port),
-		zap.String("mode", s.Mode),
-	)
 	if cfg.ENV == "dev" {
 		err := s.ListenAndServeHttp()
 		if err != nil {
 			zap.L().Error("err", zap.Error(err))
 		}
+		zap.L().Info("Listen Server Http ...",
+			zap.String("port", s.Port),
+			zap.String("mode", s.Mode),
+		)
 	} else {
 		lambda.Start(s.ListenAndServeGinProxy)
 	}
