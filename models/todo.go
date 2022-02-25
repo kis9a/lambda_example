@@ -46,7 +46,7 @@ func (t *Todo) CreateTodoItem(todo TodoItem) (TodoItem, error) {
 	return todo, err
 }
 
-func (t *Todo) ReadTodoItems(exclusiveStartKey TodoItem) (Todo, error) {
+func (t *Todo) ReadTodoItems(exclusiveStartKey TodoItem, limit int64) (Todo, error) {
 	var err error
 	var todo Todo
 	var todoItems []TodoItem
@@ -62,13 +62,13 @@ func (t *Todo) ReadTodoItems(exclusiveStartKey TodoItem) (Todo, error) {
 	if exclusiveStartKey.Id != "" {
 		params = &dynamodb.ScanInput{
 			TableName:         aws.String(todoTable),
-			Limit:             aws.Int64(20),
+			Limit:             aws.Int64(limit),
 			ExclusiveStartKey: startKeyMap,
 		}
 	} else {
 		params = &dynamodb.ScanInput{
 			TableName: aws.String(todoTable),
-			Limit:     aws.Int64(20),
+			Limit:     aws.Int64(limit),
 		}
 	}
 	scan, err := ddb.Scan(params)

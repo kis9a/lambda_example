@@ -44,7 +44,7 @@ curl -X POST -H "Content-Type: application/json" \
 http://localhost:4000/todos/create -d '{"id":"", "name":"new todo"}'
 
 curl -X POST -H "Content-Type: application/json" \
-http://localhost:4000/todos -d '{ "id":"", "name":"" }'
+"http://localhost:4000/todos?limit=16" -d '{ "id":"9d47755a-b7ce-4ba4-b581-a0533d9d2dd8", "name":"name" }'
 
 curl -X POST -H "Content-Type: application/json" \
 http://localhost:4000/todos/update -d '{"id":"9d47755a-b7ce-4ba4-b581-a0533d9d2dd8", "name":"new name"}'
