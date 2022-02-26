@@ -1,22 +1,6 @@
 ## Lambda-sls
 
-Functions with Lambda, DynamoDB to learn AWS serverless services.
-
-### Create table local example
-
-```
-## Todo create
-aws dynamodb create-table --table-name "todo" \
-  --attribute-definitions AttributeName=id,AttributeType=S \
-  AttributeName=name,AttributeType=S \
-  --key-schema AttributeName=id,KeyType=HASH \
-  AttributeName=name,KeyType=RANGE \
-  --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1 \
-  --endpoint-url http://localhost:8000
-
-## Todo delete
-aws dynamodb delete-table --table-name "todo" --endpoint-url http://localhost:8000
-```
+Serverless Functions with Lambda, DynamoDB, APIGatewayProxy... to learn.
 
 ### Development
 
@@ -31,24 +15,46 @@ See [config.go](config/config.go)
 ```
 ### .env example
 ENV: dev
-SERVER_PORT: 4000
 AWS_REGION: ap-northeast-1
-AWS_ACCESS_KEY_ID: xxxxxxxxxxxxx
-AWS_SECRET_ACCESS_KEY: xxxxxxxxxxxx
+AWS_ACCESS_KEY_ID: AKxxxxxxxxxxxxxxxxxx
+AWS_SECRET_ACCESS_KEY: 6txxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+S3_TODO_BUCKET: kis9a-lambda-upload
+DB_TODO_TABLE: lambda-sls-todo
+DB_ENDPOINT: http://127.0.0.1:8000
+DB_DISABLE_SSL: false
+SERVER_PORT: 4000
+```
+
+### Create dynamodb table local example
+
+```
+## Todo create
+aws dynamodb create-table --table-name "lambda-sls-todo" \
+  --attribute-definitions AttributeName=id,AttributeType=S \
+  --key-schema AttributeName=id,KeyType=HASH \
+  --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1 \
+  --endpoint-url http://localhost:8000
+
+## Todo delete
+aws dynamodb delete-table --table-name "lambda-sls-todo" --endpoint-url http://localhost:8000
 ```
 
 ### Todo API request example
 
 ```
+# create todo item
 curl -X POST -H "Content-Type: application/json" \
-http://localhost:4000/todos/create -d '{"id":"", "name":"new todo"}'
+http://localhost:4000/todos/create -d '{"name":"new todo"}'
 
+# read todo
 curl -X POST -H "Content-Type: application/json" \
-"http://localhost:4000/todos?limit=16" -d '{ "id":"9d47755a-b7ce-4ba4-b581-a0533d9d2dd8", "name":"name" }'
+"http://localhost:4000/todos?limit=16"
 
+# update todo
 curl -X POST -H "Content-Type: application/json" \
 http://localhost:4000/todos/update -d '{"id":"9d47755a-b7ce-4ba4-b581-a0533d9d2dd8", "name":"new name"}'
 
+# delete todo
 curl -X POST -H "Content-Type: application/json" \
 http://localhost:4000/todos/delete -d '{"id":"9d47755a-b7ce-4ba4-b581-a0533d9d2dd8", "name":"todo"}'
 ```
@@ -56,6 +62,7 @@ http://localhost:4000/todos/delete -d '{"id":"9d47755a-b7ce-4ba4-b581-a0533d9d2d
 ### Image upload API request example
 
 ```
+# upload image
 curl -X POST -F 'file=@/path/image.png' https://localhost:4000/upload
 ```
 

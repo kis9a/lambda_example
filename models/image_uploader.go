@@ -7,6 +7,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"github.com/kis9a/lambda-sls/config"
 	"github.com/kis9a/lambda-sls/infra"
 )
 
@@ -16,8 +17,6 @@ func NewImageUploader() *ImageUploader {
 	return &ImageUploader{}
 }
 
-const uploadImageBucket = "lambda-sls-images"
-
 func (h *ImageUploader) Upload(file *multipart.FileHeader, fs multipart.File) (*s3manager.UploadOutput, error) {
 	size := file.Size
 	buffer := make([]byte, size)
@@ -25,8 +24,9 @@ func (h *ImageUploader) Upload(file *multipart.FileHeader, fs multipart.File) (*
 	fileBytes := bytes.NewReader(buffer)
 	fileType := http.DetectContentType(buffer)
 	uploader := infra.GetS3Uploader()
+	bucket := config.GetConfig().S3_TODO_BUCKET
 	uploadInput := &s3manager.UploadInput{
-		Bucket:      aws.String(uploadImageBucket),
+		Bucket:      aws.String(bucket),
 		Key:         aws.String(file.Filename),
 		Body:        fileBytes,
 		ACL:         aws.String("public-read"),

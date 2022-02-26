@@ -7,7 +7,8 @@ import (
 
 type Config struct {
 	ENV                   string
-	AWS_S3_BUCKET         string
+	DB_TODO_TABLE         string
+	S3_TODO_BUCKET        string
 	AWS_ACCESS_KEY_ID     string
 	AWS_SECRET_ACCESS_KEY string
 	AWS_REGION            string
@@ -22,14 +23,17 @@ var config Config
 
 func NewConfig() {
 	config.ENV = os.Getenv("ENV")
+	config.S3_TODO_BUCKET = os.Getenv("S3_TODO_BUCKET")
+	config.HTTP_AUTH_KEY = os.Getenv("HTTP_AUTH_KEY")
+	config.HTTP_AUTH_SECRET = os.Getenv("HTTP_AUTH_SECRET")
+	config.DB_TODO_TABLE = os.Getenv("DB_TODO_TABLE")
+
+	// only local development
 	config.SERVER_PORT = os.Getenv("SERVER_PORT")
+	config.DB_ENDPOINT = os.Getenv("DB_ENDPOINT")
 	config.AWS_REGION = os.Getenv("AWS_REGION")
 	config.AWS_ACCESS_KEY_ID = os.Getenv("AWS_ACCESS_KEY_ID")
 	config.AWS_SECRET_ACCESS_KEY = os.Getenv("AWS_SECRET_ACCESS_KEY")
-	config.AWS_S3_BUCKET = os.Getenv("AWS_S3_BUCKET")
-	config.HTTP_AUTH_KEY = os.Getenv("HTTP_AUTH_KEY")
-	config.HTTP_AUTH_SECRET = os.Getenv("HTTP_AUTH_SECRET")
-	config.DB_ENDPOINT = os.Getenv("DB_ENDPOINT")
 	is, err := strconv.ParseBool(os.Getenv("DB_DISABLE_SSL"))
 	if err != nil {
 		is = false
