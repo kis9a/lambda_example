@@ -8,6 +8,8 @@ import (
 type Config struct {
 	ENV                   string
 	DB_TODO_TABLE         string
+	DB_REMO_TABLE         string
+	REMO_API_TOKEN        string
 	S3_TODO_BUCKET        string
 	AWS_ACCESS_KEY_ID     string
 	AWS_SECRET_ACCESS_KEY string
@@ -27,6 +29,7 @@ func NewConfig() {
 	config.HTTP_AUTH_KEY = os.Getenv("HTTP_AUTH_KEY")
 	config.HTTP_AUTH_SECRET = os.Getenv("HTTP_AUTH_SECRET")
 	config.DB_TODO_TABLE = os.Getenv("DB_TODO_TABLE")
+	config.DB_REMO_TABLE = os.Getenv("DB_REMO_TABLE")
 
 	// only local development
 	config.SERVER_PORT = os.Getenv("SERVER_PORT")

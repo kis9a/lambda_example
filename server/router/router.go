@@ -36,6 +36,8 @@ func InitRouter(r *gin.Engine) {
 	r.POST("/todos/update", handlers.UpdateTodo())
 	r.POST("/todos/delete", handlers.DeleteTodo())
 
+	r.POST("/remo/save", handlers.SaveRemoA2DeviceEvents())
+
 	// upload
 	r.POST("/upload", handlers.ImageUpload())
 }
